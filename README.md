@@ -16,7 +16,8 @@ curl -X POST --data-urlencode 'payload={"channel": "<channel>", "username": "<us
 ### via Go
 ```
 git clone <this repo>
-go install
+go mod init
+go install ./cmd/...
 ```
 
 or
@@ -28,6 +29,13 @@ $ go get <this repo>
 ## Usage
 ```shell
 $ slack-cli -webhook https://hooks.slack.com/services/<yourhook>  -message <message>
+```
+or via exporting
+```shell
+export SLACK_CLI_WEBHOOK=https://hooks.slack.com/services/<yourhook>
+# for csh
+# set SLACK_CLI_WEBHOOK="https://hooks.slack.com/services/<yourhook>"
+$ slack-cli -message <message>
 ```
 
 ## Remove
