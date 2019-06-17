@@ -1,51 +1,42 @@
 # slack-cli
-Simple command-line client for slack by golang
+Simple command-line client for slack by golang.
 
-![](https://img.shields.io/badge/golang-1.8.1-blue.svg?style=flat)
-[![GoDoc](https://godoc.org/github.com/takecy/slack-cli?status.svg)](https://godoc.org/github.com/takecy/slack-cli)
+You can use curl as alternative
+
+```
+curl -X POST --data-urlencode 'payload={"channel": "<channel>", "username": "<username>", "text": "<message>", \"icon_emoji\": \":ghost:\"}' https://hooks.slack.com/services/<webhook>
+```
 
 ## Features
 * Post message only
 * Use Incoming Web hook service on slack
 
-<br/>
 
 ## Install
 ### via Go
-```shell
-$ go get github.com/takecy/slack-cli
+```
+git clone <this repo>
+go install
 ```
 
-### via Binary
-[Download](https://github.com/takecy/slack-cli/releases) and copy to your `$PATH`.
+or
 
-<br/>
+```
+$ go get <this repo>
+```
 
 ## Usage
 ```shell
-$ slack-cli config <incoming web hook URL>
-$ slack-cli post <message>
+$ slack-cli -webhook https://hooks.slack.com/services/<yourhook>  -message <message>
 ```
-post to specific channel (not prefix [#])
-```shell
-$ slack-cli post -c general <message>
-```
-
-<br/>
 
 ## Remove
 ### via Go
 ```shell
 $ rm $GOPATH/bin/slack-cli
-$ rm -r $HOME/.slack_cli
 ```
 ### via Binary
-Remove your slac-cli binary in `$PATH`.  
-and
-```shell
-$ rm -r $HOME/.slack_cli
+Remove your slack-cli binary in `$PATH`.  
 ```
-
-<br/>
 ## License
 MIT
