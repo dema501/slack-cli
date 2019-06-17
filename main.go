@@ -50,6 +50,6 @@ func main() {
 		*verbosePtr,
 		*timeoutPtr,
 	); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintf(os.Stderr, "[ERR]: %v", err)
 	}
 }

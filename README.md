@@ -4,7 +4,7 @@ Simple command-line client for slack by golang.
 You can use curl as alternative
 
 ```
-curl -X POST --data-urlencode 'payload={"channel": "<channel>", "username": "<username>", "text": "<message>", \"icon_emoji\": \":ghost:\"}' https://hooks.slack.com/services/<webhook>
+curl -X POST --data-urlencode 'payload={"channel": "<channel>", "username": "<username>", "text": "<message>", "icon_emoji": ":ghost:"}' https://hooks.slack.com/services/<webhook>
 ```
 
 ## Features

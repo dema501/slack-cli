@@ -28,12 +28,15 @@ type Message struct {
 func (s *Slack) Post(msg Message, verbose bool, timeout time.Duration) (err error) {
 	b, err := json.Marshal(msg)
 	if err != nil {
-		return
+		return err
 	}
 
 	buf := bytes.NewBuffer(b)
 
 	req, err := http.NewRequest("POST", s.URL, buf)
+	if err != nil {
+		return errors.Wrap(err, "Can't make new request")
+	}
 
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.0 Safari/532.5")
 	req.Header.Set("Content-Type", "application/json")
@@ -45,26 +48,22 @@ func (s *Slack) Post(msg Message, verbose bool, timeout time.Duration) (err erro
 		}
 	}
 
-	if err != nil {
-		return errors.Wrap(err, "Can't do Slack request")
-	}
-
 	client := http.Client{Timeout: timeout}
 
 	res, err := client.Do(req)
 	if err != nil {
-		return errors.Wrap(err, "Can't do Slack request")
+		return errors.Wrap(err, "Can't post request")
 	}
 
 	defer func() {
 		if err := res.Body.Close(); err != nil {
-			fmt.Println("[WARN]: ", errors.Wrap(err, "can't close response body"))
+			fmt.Println("[WARN]: ", errors.Wrap(err, "Can't close response body"))
 		}
 	}()
 
 	if res.StatusCode != 200 {
-		return errors.New("post.Failed")
+		return errors.New("Slack response status is not 2xx")
 	}
 
-	return
+	return nil
 }
