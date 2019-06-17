@@ -13,7 +13,9 @@ import (
 
 // Slack is struct
 type Slack struct {
-	URL string
+	URL     string
+	Verbose bool
+	Timeout time.Duration
 }
 
 // Message is post payload
@@ -25,7 +27,7 @@ type Message struct {
 }
 
 // Post is post message to slack
-func (s *Slack) Post(msg Message, verbose bool, timeout time.Duration) (err error) {
+func (s *Slack) Post(msg Message) (err error) {
 	b, err := json.Marshal(msg)
 	if err != nil {
 		return err
@@ -42,13 +44,13 @@ func (s *Slack) Post(msg Message, verbose bool, timeout time.Duration) (err erro
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 
-	if verbose {
+	if s.Verbose {
 		if curl, err := http2curl.GetCurlCommand(req); err == nil {
 			fmt.Println("[CURL]: ", curl)
 		}
 	}
 
-	client := http.Client{Timeout: timeout}
+	client := http.Client{Timeout: s.Timeout}
 
 	res, err := client.Do(req)
 	if err != nil {

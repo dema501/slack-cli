@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/dema501/slack-cli/slacker"
+	"github.com/dema501/slack-cli/pkg/slacker"
 )
 
 func main() {
@@ -39,17 +39,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	slack := &slacker.Slack{URL: *webhookPtr}
+	slack := &slacker.Slack{
+		URL:     *webhookPtr,
+		Verbose: *verbosePtr,
+		Timeout: *timeoutPtr,
+	}
+
 	if err := slack.Post(
 		slacker.Message{
 			Text:      *messagePtr,
 			Username:  *usernamePtr,
 			Channel:   *channelPtr,
 			IconEmoji: *iconPtr,
-		},
-		*verbosePtr,
-		*timeoutPtr,
-	); err != nil {
+		}); err != nil {
 		fmt.Fprintf(os.Stderr, "[ERR]: %v", err)
 	}
 }
