@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/takecy/slack-cli/slacker"
+	"github.com/dema501/slack-cli/slacker"
 )
 
 func main() {
