@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -32,6 +34,31 @@ func main() {
 	if *webhookPtr == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
+	}
+
+	if *messagePtr == "" {
+		info, err := os.Stdin.Stat()
+
+		if err == nil {
+			if info.Mode()&os.ModeNamedPipe != 0 {
+				reader := bufio.NewReader(os.Stdin)
+				var output []rune
+
+				for {
+					input, _, err := reader.ReadRune()
+					if err != nil && err == io.EOF {
+						break
+					}
+					output = append(output, input)
+				}
+
+				for _, v := range output {
+					*messagePtr += string(v)
+				}
+			}
+		} else {
+			fmt.Fprintf(os.Stderr, "[WARN]: Can't read stdin: %v", err)
+		}
 	}
 
 	if *messagePtr == "" {
