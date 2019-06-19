@@ -49,6 +49,10 @@ func main() {
 
 				output := strings.Builder{}
 
+				// Grow the buffer to a decent length, so we don't have to continually
+				// re-allocate.
+				output.Grow(60)
+
 				for {
 					input, _, err := reader.ReadRune()
 					if err != nil && err == io.EOF {
