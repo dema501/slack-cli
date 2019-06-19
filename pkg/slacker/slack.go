@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/moul/http2curl"
@@ -46,7 +47,7 @@ func (s *Slack) Post(msg Message) (err error) {
 
 	if s.Verbose {
 		if curl, err := http2curl.GetCurlCommand(req); err == nil {
-			fmt.Println("[CURL]: ", curl)
+			fmt.Fprintf(os.Stderr, "[CURL]: %v", curl)
 		}
 	}
 
@@ -59,7 +60,7 @@ func (s *Slack) Post(msg Message) (err error) {
 
 	defer func() {
 		if err := res.Body.Close(); err != nil {
-			fmt.Println("[WARN]: ", errors.Wrap(err, "Can't close response body"))
+			fmt.Fprintf(os.Stderr, "[WARN]: %v", errors.Wrap(err, "Can't close response body"))
 		}
 	}()
 

@@ -5,15 +5,23 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/dema501/slack-cli/pkg/slacker"
 )
 
+// isURL check if string is url
+func isURL(str string) bool {
+	u, err := url.Parse(str)
+	return err == nil && u.Scheme != "" && u.Host != ""
+}
+
 func main() {
-	webhookPtr := flag.String("webhook", "", "Webhook url (Required)")
-	channelPtr := flag.String("channel", "", "Channel (Required)")
+	webhookPtr := flag.String("webhook", os.Getenv("SLACK_CLI_WEBHOOK"), "Webhook url (Required)")
+	channelPtr := flag.String("channel", os.Getenv("SLACK_CLI_CHANNEL"), "Channel (Required)")
 	messagePtr := flag.String("message", "", "Message")
 	usernamePtr := flag.String("username", "Incoming-Webhook", "Username")
 	iconPtr := flag.String("icon", ":ghost:", "Icon")
@@ -27,11 +35,7 @@ func main() {
 
 	flag.Parse()
 
-	if *webhookPtr == "" {
-		*webhookPtr = os.Getenv("SLACK_CLI_WEBHOOK")
-	}
-
-	if *webhookPtr == "" {
+	if isURL(*webhookPtr) == false {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -42,19 +46,18 @@ func main() {
 		if err == nil {
 			if info.Mode()&os.ModeNamedPipe != 0 {
 				reader := bufio.NewReader(os.Stdin)
-				var output []rune
+
+				output := strings.Builder{}
 
 				for {
 					input, _, err := reader.ReadRune()
 					if err != nil && err == io.EOF {
 						break
 					}
-					output = append(output, input)
+					output.WriteRune(input)
 				}
 
-				for _, v := range output {
-					*messagePtr += string(v)
-				}
+				*messagePtr = output.String()
 			}
 		} else {
 			fmt.Fprintf(os.Stderr, "[WARN]: Can't read stdin: %v", err)
